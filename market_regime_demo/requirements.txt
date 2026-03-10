@@ -3,4 +3,5 @@ numpy
 yfinance
 lightgbm
 scikit-learn
+VIX-Data
 
