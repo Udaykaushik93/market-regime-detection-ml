@@ -1,6 +1,3 @@
-import sys
-sys.path.append("/home/jovyan")
-
 from my_project.library.str_mar import (
     market_features,
     market_state_vector,
