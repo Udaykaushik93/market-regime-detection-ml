@@ -1,0 +1,6 @@
+Pandas
+numpy
+yfinance
+lightgbm
+scikit-learn
+
