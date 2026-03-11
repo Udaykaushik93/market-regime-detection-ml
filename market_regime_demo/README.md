@@ -1,4 +1,4 @@
-# Hybrid ML Market Regime Detection (NIFTY + VIX)
+# Quant Research Framework  (NIFTY + VIX)
 
 This project builds a hybrid machine learning framework to detect market regimes
 and forecast market risk using NIFTY and India VIX data.
