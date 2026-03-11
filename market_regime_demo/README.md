@@ -1,30 +1,83 @@
-# Market Regime Detection using Machine Learning
+# Hybrid ML Market Regime Detection (NIFTY + VIX)
 
-This project implements a machine learning framework for analyzing financial markets and detecting different market regimes such as expansion, pullback, correction, and crash.
+This project builds a hybrid machine learning framework to detect market regimes
+and forecast market risk using NIFTY and India VIX data.
 
-## Overview
+The model combines unsupervised clustering with supervised ML to identify
+hidden market states and predict future market behavior.
 
-The system uses financial time-series data and machine learning models to identify structural stress, volatility conditions, and market direction.
+---
 
-The model combines:
+## Features
 
-- Feature engineering on price and volatility signals
-- Gaussian Mixture Models for unsupervised regime detection
-- LightGBM models for regime classification and return prediction
-- Market state interpretation for risk assessment
+- Market regime detection using Gaussian Mixture Models
+- Crash probability prediction (10-day & 30-day)
+- Expected return forecasting
+- Volatility stress modeling
+- Market structure instability detection
+- Regime transition probability analysis
 
-## Technologies Used
+---
 
-- Python
-- Pandas
-- NumPy
-- LightGBM
-- Scikit-learn
-- yfinance
+## Machine Learning Models
 
-## Data Source
+Unsupervised Learning
+- Gaussian Mixture Model (Market Regimes)
 
-Market data is retrieved from Yahoo Finance using the `yfinance` API.
+Supervised Learning
+- LightGBM Classifier (Crash Prediction)
+- LightGBM Regressor (Return Prediction)
 
-## Project Structure
+---
 
+## Feature Engineering
+
+Key features engineered:
+
+- Trend Strength
+- Volatility Stress
+- Structure Stress
+- Direction Bias Score
+- VIX Z-score
+- VIX acceleration
+- Slope decay
+
+---
+
+## Data
+
+Source:
+- NIFTY Index
+- India VIX
+
+Data collected using:
+
+yfinance
+
+---
+
+## Output
+
+The model generates a market state vector including:
+
+- Crash probability (10d / 30d)
+- Expected return
+- Market trend state
+- Volatility regime
+- Structural stability
+- Market direction bias
+
+---
+
+## Use Cases
+
+- Quantitative trading research
+- Risk management
+- Market regime detection
+- Portfolio allocation strategies
+
+---
+
+## Author
+
+Uday Kaushik
