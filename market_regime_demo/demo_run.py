@@ -17,9 +17,6 @@ for k, v in state.items():
 print("\nRegime Interpretation:")
 print(regime_interpretation("^NSEI", "2010-01-01"))
 
-print("\nRegime Survival:")
-print(regime_survival_analysis("^NSEI", "2010-01-01"))
-
 print("\nML Next Regime Performance:")
 print(ml_next_regime_model("^NSEI", "2010-01-01"))
 
