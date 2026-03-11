@@ -1,0 +1,152 @@
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import seaborn as sns
+import yfinance as yf
+
+# =====================================================
+# 1. MARKET STATE DASHBOARD
+# =====================================================
+
+def plot_market_state_dashboard(state):
+
+    metrics = {
+        "Crash 10D": state["crash_prob_10d"],
+        "Crash 30D": state["crash_prob_30d"],
+        "Trend %": state["trend_percentile"],
+        "Volatility %": state["volatility_percentile"],
+        "Structure %": state["structure_percentile"]
+    }
+
+    names = list(metrics.keys())
+    values = list(metrics.values())
+
+    plt.figure(figsize=(8,4))
+    plt.bar(names, values)
+    plt.title("Market Risk Dashboard")
+    plt.ylabel("Score / Probability")
+    plt.show()
+
+
+# =====================================================
+# 2. EXPECTED PRICE FORECAST
+# =====================================================
+
+def plot_expected_returns(state, ticker="^NSEI"):
+
+    data = yf.download(ticker, period="5d", progress=False)
+
+    if isinstance(data.columns, pd.MultiIndex):
+        data.columns = data.columns.get_level_values(0)
+
+    current_price = float(data["Close"].iloc[-1])
+
+    price_10d = current_price * (1 + state["expected_return_10d"])
+    price_30d = current_price * (1 + state["expected_return_30d"])
+
+    labels = ["Today", "10D Forecast", "30D Forecast"]
+    prices = [current_price, price_10d, price_30d]
+
+    plt.figure(figsize=(6,4))
+    plt.plot(labels, prices, marker="o")
+    plt.title("Expected Market Price Path")
+    plt.ylabel("Price")
+    plt.show()
+
+
+# =====================================================
+# 3. REGIME CLUSTER VISUALIZATION
+# =====================================================
+
+def plot_regimes(df):
+
+    plt.figure(figsize=(14,6))
+
+    for regime in df["unsupervised_regime"].unique():
+
+        subset = df[df["unsupervised_regime"] == regime]
+
+        plt.scatter(
+            subset.index,
+            subset["Close"],
+            s=5,
+            label=f"Regime {regime}"
+        )
+
+    plt.plot(df.index, df["Close"], alpha=0.3)
+
+    plt.title("Market Regime Detection (GMM)")
+    plt.legend()
+    plt.show()
+
+
+# =====================================================
+# 4. REGIME TRANSITION HEATMAP
+# =====================================================
+
+def plot_transition_matrix(df):
+
+    df["next_regime"] = df["unsupervised_regime"].shift(-1)
+
+    transition_counts = (
+        df.groupby(["unsupervised_regime","next_regime"])
+        .size()
+        .unstack(fill_value=0)
+    )
+
+    transition_probs = transition_counts.div(
+        transition_counts.sum(axis=1),
+        axis=0
+    )
+
+    plt.figure(figsize=(6,5))
+    sns.heatmap(transition_probs, annot=True, cmap="Blues")
+
+    plt.title("Regime Transition Probability")
+    plt.xlabel("Next Regime")
+    plt.ylabel("Current Regime")
+
+    plt.show()
+
+
+# =====================================================
+# 5. ML MODEL PERFORMANCE
+# =====================================================
+
+def plot_model_performance(result):
+
+    metrics = ["Accuracy","Log Loss"]
+    values = [result["accuracy"], result["log_loss"]]
+
+    plt.figure(figsize=(5,4))
+    plt.bar(metrics, values)
+
+    plt.title("Next Regime Prediction Performance")
+
+    plt.show()
+
+
+# =====================================================
+# RUN EVERYTHING
+# =====================================================
+
+from my_project.library.str_mar import (
+    market_state_vector,
+    market_report,
+    regime_interpretation,
+    ml_next_regime_model,
+    _market_core
+)
+
+# Get data
+state = market_state_vector("^NSEI","2010-01-01")
+ml_perf = ml_next_regime_model("^NSEI","2010-01-01")
+
+df, *_ = _market_core("^NSEI","2010-01-01")
+
+# Plot charts
+plot_market_state_dashboard(state)
+plot_expected_returns(state)
+plot_regimes(df)
+plot_transition_matrix(df)
+plot_model_performance(ml_perf)
